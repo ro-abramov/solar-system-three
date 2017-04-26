@@ -27,7 +27,9 @@ const planetCreator = ({
   );
   planet.castShadow = true;
   planet.planetName = name;
-  let t = 0;
+  let t = Math.PI * Math.random() * 10000 / 180;
+  planet.position.x = Math.sin(t * rotation) * radius;
+  planet.position.z = Math.cos(t * rotation) * (radius - 200);
   if (withRing) {
     let ringsGeom = new Geometry();
     let ringsMaterial = new PointsMaterial({
@@ -60,15 +62,34 @@ const planetCreator = ({
     t += Math.PI / 180 * 2;
   };
 
+  var planetOrbitGeom = new Geometry();
+  var planetOrbitMat = new PointsMaterial({
+    size: 2,
+    color: 0x6e6e6e,
+    sizeAttenuation: false
+  });
+
+  for (let i = 0; i < 40000; i++) {
+    let vertex = new Vector3();
+    vertex.x = Math.sin(Math.PI / 180 * i) * radius;
+    vertex.z = Math.cos(Math.PI / 180 * i) * (radius - 200);
+    planetOrbitGeom.vertices.push(vertex);
+  }
+
+  var orbit = new Points(planetOrbitGeom, planetOrbitMat);
+  orbit.castShadow = true;
+
   return {
     planet,
     ring,
-    rotate
+    rotate,
+    orbit
   };
 };
 export const addPlanetsToScene = (planets, scene) => {
   for (let key in planets) {
     scene.add(planets[key].planet);
+    scene.add(planets[key].orbit);
     if (typeof planets[key].ring !== 'undefined') {
       scene.add(planets[key].ring);
     }
@@ -90,14 +111,14 @@ export const createPlanets = () => {
       name: 'mercury',
       diametr: 20,
       radius: 3000,
-      rotation: 0.1,
+      rotation: 0.8,
       textureLoader
     }),
     venus: planetCreator({
       name: 'venus',
       diametr: 50,
       radius: 4500,
-      rotation: 0.1,
+      rotation: 0.2,
       textureLoader
     }),
     earth: planetCreator({
@@ -111,21 +132,21 @@ export const createPlanets = () => {
       name: 'mars',
       diametr: 40,
       radius: 6500,
-      rotation: 0.1,
+      rotation: 0.06,
       textureLoader
     }),
     jupiter: planetCreator({
       name: 'jupiter',
       diametr: 400,
       radius: 10000,
-      rotation: 0.1,
+      rotation: 0.02,
       textureLoader
     }),
     saturn: planetCreator({
       name: 'saturn',
       diametr: 350,
       radius: 12000,
-      rotation: 0.1,
+      rotation: 0.008,
       textureLoader,
       withRing: true
     }),
@@ -133,14 +154,14 @@ export const createPlanets = () => {
       name: 'uranus',
       diametr: 300,
       radius: 15000,
-      rotation: 0.1,
+      rotation: 0.005,
       textureLoader
     }),
     neptune: planetCreator({
       name: 'neptune',
       diametr: 280,
       radius: 18000,
-      rotation: 0.1,
+      rotation: 0.001,
       textureLoader
     })
   };
@@ -159,7 +180,7 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
       distance = 300;
       break;
     case 'venus':
-      distance = 400;
+      distance = 200;
       break;
     case 'earth':
       distance = 500;

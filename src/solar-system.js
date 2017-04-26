@@ -2,16 +2,11 @@ import {
   Scene,
   PerspectiveCamera,
   WebGLRenderer as Renderer,
-  Geometry,
-  PointsMaterial,
-  Vector3,
-  Points,
-  PointLight,
   Raycaster
 } from 'three';
 import OrbitControls from 'three-orbitcontrols';
 
-import createSun from './planets/sun';
+import createSun, { initSunLight } from './planets/sun';
 import {
   createPlanets,
   rotatePlanets,
@@ -51,19 +46,13 @@ export default () => {
   var renderer = initRenderer();
   var stars = createStars(39000);
   var sun = createSun();
-
   var planets = createPlanets();
+  var light = initSunLight();
 
-  var light = new PointLight(0xffffff, 1.4, 10000000);
-  light.position.set(0, 0, 0);
-  light.castShadow = true;
-  light.shadowMapWidth = 2048;
-  light.shadowMapHeight = 2048;
   scene.add(light);
-
   scene.add(sun);
-  addPlanetsToScene(planets, scene);
   scene.add(stars);
+  addPlanetsToScene(planets, scene);
 
   var controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -85,25 +74,24 @@ export default () => {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length === 0) return;
-    controls.enabled = false;
     var planet = intersects[0].object;
     if (planet.planetName === 'sun') return;
-    cameraPrevPosition = {
-      x: camera.position.x,
-      y: camera.position.y,
-      z: camera.position.z
-    };
-    planetToLookAt = planet;
-    mouseIsDown = true;
+    setPlanetToLook(planet);
   });
 
   window.addEventListener('keydown', e => {
     if (e.keyCode !== 27) return;
-    planetToLookAt = null;
-    camera.position.x = cameraPrevPosition.x;
-    camera.position.y = cameraPrevPosition.y;
-    camera.position.z = cameraPrevPosition.z;
-    mouseIsDown = false;
+    return resetPlanetToLook();
+  });
+
+  var selector = document.getElementById('planetSelector');
+
+  selector.addEventListener('change', e => {
+    var planetSelected = e.target.value;
+    if (planetSelected === 'none') {
+      return resetPlanetToLook();
+    }
+    setPlanetToLook(planets[planetSelected].planet);
   });
 
   function animation() {
@@ -115,4 +103,23 @@ export default () => {
   }
 
   animation();
+
+  function setPlanetToLook(planet) {
+    controls.enabled = false;
+    cameraPrevPosition = {
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    };
+    planetToLookAt = planet;
+    mouseIsDown = true;
+  }
+
+  function resetPlanetToLook(planet) {
+    planetToLookAt = null;
+    camera.position.x = cameraPrevPosition.x;
+    camera.position.y = cameraPrevPosition.y;
+    camera.position.z = cameraPrevPosition.z;
+    mouseIsDown = false;
+  }
 };

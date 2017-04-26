@@ -1,4 +1,10 @@
-import { SphereGeometry, MeshBasicMaterial, Mesh, TextureLoader } from 'three';
+import {
+  SphereGeometry,
+  MeshBasicMaterial,
+  Mesh,
+  TextureLoader,
+  PointLight
+} from 'three';
 
 export default () => {
   const texture = new TextureLoader().load('/sun.jpg');
@@ -9,4 +15,13 @@ export default () => {
   sun.planetName = 'sun';
 
   return sun;
+};
+
+export const initSunLight = () => {
+  var light = new PointLight(0xffffff, 1.4, 10000000);
+  light.position.set(0, 0, 0);
+  light.castShadow = true;
+  light.shadowMapWidth = 2048;
+  light.shadowMapHeight = 2048;
+  return light;
 };

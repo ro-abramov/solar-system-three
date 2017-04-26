@@ -53,7 +53,7 @@ const planetCreator = ({
   const rotate = () => {
     planet.position.x = Math.sin(t * rotation) * radius;
     planet.position.z = Math.cos(t * rotation) * (radius - 200);
-    planet.rotation.y += rotation / 10;
+    planet.rotation.y += 0.01;
     if (withRing) {
       ring.position.x = planet.position.x;
       ring.position.z = planet.position.z;
@@ -177,7 +177,7 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
 
   switch (planet.planetName) {
     case 'mercury':
-      distance = 300;
+      distance = 100;
       break;
     case 'venus':
       distance = 200;

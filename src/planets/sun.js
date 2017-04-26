@@ -7,7 +7,7 @@ import {
 } from 'three';
 
 export default () => {
-  const texture = new TextureLoader().load('/sun.jpg');
+  const texture = new TextureLoader().load(`${process.env.PUBLIC_URL}/sun.jpg`);
   const sunMat = new MeshBasicMaterial({
     map: texture
   });

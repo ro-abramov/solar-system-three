@@ -18,7 +18,8 @@ const planetCreator = ({
   withRing = false
 }) => {
   let ring;
-  const texture = textureLoader.load(`/${name}.jpg`);
+  const texture = textureLoader.load(`${process.env.PUBLIC_URL}/${name}.jpg`);
+
   const planet = new Mesh(
     new SphereGeometry(diametr, 80, 80),
     new Material({

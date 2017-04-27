@@ -9,51 +9,6 @@ import {
   Points
 } from 'three';
 
-const planetCreator = ({
-  name,
-  diametr,
-  radius,
-  rotation,
-  textureLoader,
-  withRing = false
-}) => {
-  let ring;
-  const texture = textureLoader.load(`${process.env.PUBLIC_URL}/${name}.jpg`);
-
-  const planet = new Mesh(
-    new SphereGeometry(diametr, 90, 90),
-    new Material({
-      map: texture
-    })
-  );
-  planet.castShadow = true;
-  planet.planetName = name;
-  let t = Math.PI * Math.random() * 1000000 / 180;
-  planet.position.x = Math.sin(t * rotation) * radius;
-  planet.position.z = Math.cos(t * rotation) * (radius - 200);
-  if (withRing) {
-    ring = createRings(diametr);
-  }
-  const rotate = () => {
-    planet.position.x = Math.sin(t * rotation) * radius;
-    planet.position.z = Math.cos(t * rotation) * (radius - 200);
-    planet.rotation.y += 0.01;
-    if (withRing) {
-      ring.position.x = planet.position.x;
-      ring.position.z = planet.position.z;
-      ring.rotation.y -= 0.008;
-    }
-    t += Math.PI / 180 * 2;
-  };
-
-  return {
-    planet,
-    ring,
-    rotate,
-    orbit: createOrbit(radius)
-  };
-};
-
 const createOrbit = radius => {
   var planetOrbitGeom = new Geometry();
   var planetOrbitMat = new PointsMaterial({
@@ -93,6 +48,52 @@ const createRings = diametr => {
   ring.castShadow = true;
   ring.rotation.z = -Math.PI / 8;
   return ring;
+};
+
+const planetCreator = ({
+  name,
+  diametr,
+  radius,
+  rotation,
+  textureLoader,
+  withRing = false
+}) => {
+  let ring;
+  const texture = textureLoader.load(`${process.env.PUBLIC_URL}/${name}.jpg`);
+
+  const planet = new Mesh(
+    new SphereGeometry(diametr, 150, 150),
+    new Material({
+      bumpMap: texture,
+      map: texture
+    })
+  );
+  planet.castShadow = true;
+  planet.planetName = name;
+  let t = Math.PI * Math.random() * 1000000 / 180;
+  planet.position.x = Math.sin(t * rotation) * radius;
+  planet.position.z = Math.cos(t * rotation) * (radius - 200);
+  if (withRing) {
+    ring = createRings(diametr);
+  }
+  const rotate = () => {
+    planet.position.x = Math.sin(t * rotation) * radius;
+    planet.position.z = Math.cos(t * rotation) * (radius - 200);
+    planet.rotation.y += 0.01;
+    if (withRing) {
+      ring.position.x = planet.position.x;
+      ring.position.z = planet.position.z;
+      ring.rotation.y -= 0.008;
+    }
+    t += Math.PI / 180 * 2;
+  };
+
+  return {
+    planet,
+    ring,
+    rotate,
+    orbit: createOrbit(radius)
+  };
 };
 
 export const addPlanetsToScene = (planets, scene) => {
@@ -198,10 +199,10 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
       distance = 200;
       break;
     case 'jupiter':
-      distance = 1400;
+      distance = 1700;
       break;
     case 'saturn':
-      distance = 1200;
+      distance = 1700;
       break;
     case 'uranus':
       distance = 1100;

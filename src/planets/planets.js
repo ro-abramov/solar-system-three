@@ -28,7 +28,7 @@ const planetCreator = ({
   );
   planet.castShadow = true;
   planet.planetName = name;
-  let t = Math.PI * Math.random() * 10000 / 180;
+  let t = Math.PI * Math.random() * 1000000 / 180;
   planet.position.x = Math.sin(t * rotation) * radius;
   planet.position.z = Math.cos(t * rotation) * (radius - 200);
   if (withRing) {
@@ -181,25 +181,25 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
       distance = 100;
       break;
     case 'venus':
-      distance = 200;
+      distance = 220;
       break;
     case 'earth':
-      distance = 500;
+      distance = 250;
       break;
     case 'mars':
-      distance = 450;
+      distance = 200;
       break;
     case 'jupiter':
-      distance = 900;
+      distance = 1400;
       break;
     case 'saturn':
-      distance = 900;
+      distance = 1200;
       break;
     case 'uranus':
-      distance = 600;
+      distance = 1100;
       break;
     case 'neptune':
-      distance = 600;
+      distance = 1000;
       break;
     default:
       distance = 900;

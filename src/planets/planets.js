@@ -183,7 +183,8 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
     return;
   }
   
-  var distance = distanceToPlanet(planet.planetName);
+  let planetRadius = planet.geometry.boundingSphere.radius;
+  let distance = planetRadius * 3;
 
   camera.position.set(planet.position.x, planet.position.y, planet.position.z + distance);
   camera.lookAt(planet.position);

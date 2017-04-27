@@ -65,6 +65,8 @@ export default () => {
   var cameraPrevPosition;
   var mouseIsDown = false;
 
+  var selector = document.getElementById('planetSelector');
+
   window.addEventListener('mousedown', e => {
     if (mouseIsDown) return;
     var mouse = {
@@ -76,15 +78,9 @@ export default () => {
     if (intersects.length === 0) return;
     var planet = intersects[0].object;
     if (planet.planetName === 'sun') return;
+    selector.value = planet.planetName;
     setPlanetToLook(planet);
   });
-
-  window.addEventListener('keydown', e => {
-    if (e.keyCode !== 27) return;
-    return resetPlanetToLook();
-  });
-
-  var selector = document.getElementById('planetSelector');
 
   selector.addEventListener('change', e => {
     var planetSelected = e.target.value;
@@ -92,6 +88,12 @@ export default () => {
       return resetPlanetToLook();
     }
     setPlanetToLook(planets[planetSelected].planet);
+  });
+
+  window.addEventListener('keydown', e => {
+    if (e.keyCode !== 27) return;
+    selector.value = 'none';
+    return resetPlanetToLook();
   });
 
   function animation() {
@@ -116,6 +118,7 @@ export default () => {
   }
 
   function resetPlanetToLook(planet) {
+    console.log('reseted');
     planetToLookAt = null;
     camera.position.x = cameraPrevPosition.x;
     camera.position.y = cameraPrevPosition.y;

@@ -21,7 +21,7 @@ const planetCreator = ({
   const texture = textureLoader.load(`${process.env.PUBLIC_URL}/${name}.jpg`);
 
   const planet = new Mesh(
-    new SphereGeometry(diametr, 80, 80),
+    new SphereGeometry(diametr, 90, 90),
     new Material({
       map: texture
     })
@@ -32,24 +32,7 @@ const planetCreator = ({
   planet.position.x = Math.sin(t * rotation) * radius;
   planet.position.z = Math.cos(t * rotation) * (radius - 200);
   if (withRing) {
-    let ringsGeom = new Geometry();
-    let ringsMaterial = new PointsMaterial({
-      size: 0.8,
-      color: 0x6e6e6e,
-      sizeAttenuation: false
-    });
-    for (let i = 0; i < 90000; i++) {
-      let vertex = new Vector3();
-      vertex.x =
-        Math.sin(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
-      vertex.y = Math.random() * 10;
-      vertex.z =
-        Math.cos(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
-      ringsGeom.vertices.push(vertex);
-    }
-    ring = new Points(ringsGeom, ringsMaterial);
-    ring.castShadow = true;
-    ring.rotation.z = -Math.PI / 8;
+    ring = createRings(diametr);
   }
   const rotate = () => {
     planet.position.x = Math.sin(t * rotation) * radius;
@@ -63,30 +46,55 @@ const planetCreator = ({
     t += Math.PI / 180 * 2;
   };
 
+  return {
+    planet,
+    ring,
+    rotate,
+    orbit: createOrbit(radius)
+  };
+};
+
+const createOrbit = radius => {
   var planetOrbitGeom = new Geometry();
   var planetOrbitMat = new PointsMaterial({
-    size: 2,
+    size: 1,
     color: 0x6e6e6e,
     sizeAttenuation: false
   });
 
-  for (let i = 0; i < 40000; i++) {
+  for (let i = 0; i < 400; i++) {
     let vertex = new Vector3();
     vertex.x = Math.sin(Math.PI / 180 * i) * radius;
     vertex.z = Math.cos(Math.PI / 180 * i) * (radius - 200);
     planetOrbitGeom.vertices.push(vertex);
   }
 
-  var orbit = new Points(planetOrbitGeom, planetOrbitMat);
+  const orbit = new Points(planetOrbitGeom, planetOrbitMat);
   orbit.castShadow = true;
-
-  return {
-    planet,
-    ring,
-    rotate,
-    orbit
-  };
+  return orbit;
 };
+const createRings = diametr => {
+  let ringsGeom = new Geometry();
+  let ringsMaterial = new PointsMaterial({
+    size: 0.8,
+    color: 0x6e6e6e,
+    sizeAttenuation: false
+  });
+  for (let i = 0; i < 90000; i++) {
+    let vertex = new Vector3();
+    vertex.x =
+      Math.sin(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
+    vertex.y = Math.random() * 10;
+    vertex.z =
+      Math.cos(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
+    ringsGeom.vertices.push(vertex);
+  }
+  const ring = new Points(ringsGeom, ringsMaterial);
+  ring.castShadow = true;
+  ring.rotation.z = -Math.PI / 8;
+  return ring;
+};
+
 export const addPlanetsToScene = (planets, scene) => {
   for (let key in planets) {
     scene.add(planets[key].planet);

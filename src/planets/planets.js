@@ -67,6 +67,7 @@ const planetCreator = ({
   );
   planet.castShadow = true;
   planet.planetName = name;
+  planet.planetRotation = rotation;
   let t = Math.PI * Math.random() * 1000000 / 180;
   planet.position.x = Math.sin(t * rotation) * radius;
   planet.position.z = Math.cos(t * rotation) * (radius - 200);
@@ -179,15 +180,19 @@ export const lookAtPlanet = ({ planet, camera, controls }) => {
     controls.enabled = true;
     return;
   }
-  
+
   let planetRadius = planet.geometry.boundingSphere.radius;
   let distance = planetRadius * 3;
 
-  camera.position.set(planet.position.x, planet.position.y, planet.position.z + distance);
+  camera.position.set(
+    planet.position.x,
+    planet.position.y,
+    planet.position.z + distance
+  );
   camera.lookAt(planet.position);
 };
 
-export const lookAtPlanetAnimation = ({planet, camera, controls}) => {
+export const lookAtPlanetAnimation = ({ planet, camera, controls }) => {
   if (planet === null) {
     controls.enabled = true;
     return;
@@ -198,10 +203,10 @@ export const lookAtPlanetAnimation = ({planet, camera, controls}) => {
 
   let delta = new Vector3(0, 0, distance);
 
-  const rotationSpeed = planetRadius * 10; // time of full rotation is ms
-  const rotationState = (new Date).getTime() / rotationSpeed;
+  const rotationSpeed = Math.max(1000, planetRadius * 10); // TODO: check the value of 1000 on final product.
+  const rotationState = new Date().getTime() / rotationSpeed;
 
-  delta = delta.applyAxisAngle(new Vector3(0, 1, 0), rotationState)
+  delta = delta.applyAxisAngle(new Vector3(0, 1, 0), rotationState);
 
   const targetPosition = new Vector3(
     delta.x + planet.position.x,

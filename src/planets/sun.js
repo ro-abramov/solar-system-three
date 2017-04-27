@@ -9,7 +9,6 @@ import {
 export default () => {
   const texture = new TextureLoader().load(`${process.env.PUBLIC_URL}/sun.jpg`);
   const sunMat = new MeshBasicMaterial({
-    bumpMap: texture,
     map: texture
   });
   const sun = new Mesh(new SphereGeometry(2300, 200, 200), sunMat);

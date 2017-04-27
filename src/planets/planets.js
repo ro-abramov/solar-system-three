@@ -2,7 +2,6 @@ import {
   Mesh,
   SphereGeometry,
   MeshPhongMaterial as Material,
-  MeshNormalMaterial,
   TextureLoader,
   PointsMaterial,
   Geometry,

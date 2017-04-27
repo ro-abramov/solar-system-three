@@ -11,7 +11,6 @@ import {
   createPlanets,
   rotatePlanets,
   addPlanetsToScene,
-  lookAtPlanet,
   lookAtPlanetAnimation
 } from './planets/planets';
 import createStars from './planets/stars';
@@ -96,7 +95,6 @@ export default () => {
     if (e.keyCode !== 27) return;
     selector.value = 'none';
     return resetPlanetToLook();
-    lookAtPlanet({ planet: planetToLookAt, camera, controls });
   });
 
   function animation() {

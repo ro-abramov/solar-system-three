@@ -14,6 +14,7 @@ import {
   lookAtPlanetAnimation
 } from './planets/planets';
 import createStars from './planets/stars';
+import adaptiveHDR from './effects/adaptiveHDR';
 
 const width = window.innerWidth;
 const height = window.innerHeight - 4;
@@ -53,6 +54,8 @@ export default () => {
   scene.add(sun);
   scene.add(stars);
   addPlanetsToScene(planets, scene);
+
+  var shaderRenderrer = adaptiveHDR(renderer, scene, camera, light);
 
   var controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -102,7 +105,7 @@ export default () => {
     sun.rotation.y += 0.001;
     rotatePlanets(planets);
     lookAtPlanetAnimation({ planet: planetToLookAt, camera, controls });
-    renderer.render(scene, camera);
+    shaderRenderrer.render(0.017);
   }
 
   animation();

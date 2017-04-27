@@ -18,7 +18,7 @@ export default () => {
 };
 
 export const initSunLight = () => {
-  var light = new PointLight(0xffffff, 1.4, 10000000);
+  var light = new PointLight(0xffaa99, 1.4, 10000000);
   light.position.set(0, 0, 0);
   light.castShadow = true;
   light.shadow.mapSize.width = 2048;

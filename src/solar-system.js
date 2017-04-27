@@ -11,7 +11,8 @@ import {
   createPlanets,
   rotatePlanets,
   addPlanetsToScene,
-  lookAtPlanet
+  lookAtPlanet,
+  lookAtPlanetAnimation
 } from './planets/planets';
 import createStars from './planets/stars';
 
@@ -42,7 +43,7 @@ const initRenderer = () => {
 
 export default () => {
   var camera = initCamera();
-  var scene = (window.scene = initScene());
+  var scene = initScene();
   var renderer = initRenderer();
   var stars = createStars(39000);
   var sun = createSun();
@@ -76,6 +77,7 @@ export default () => {
     raycaster.setFromCamera(mouse, camera);
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length === 0) return;
+    controls.enabled = false;
     var planet = intersects[0].object;
     if (planet.planetName === 'sun') return;
     selector.value = planet.planetName;
@@ -94,13 +96,14 @@ export default () => {
     if (e.keyCode !== 27) return;
     selector.value = 'none';
     return resetPlanetToLook();
+    lookAtPlanet({ planet: planetToLookAt, camera, controls });
   });
 
   function animation() {
     requestAnimationFrame(animation);
     sun.rotation.y += 0.001;
     rotatePlanets(planets);
-    lookAtPlanet({ planet: planetToLookAt, camera, controls });
+    lookAtPlanetAnimation({ planet: planetToLookAt, camera, controls });
     renderer.render(scene, camera);
   }
 

@@ -201,7 +201,7 @@ export const lookAtPlanetAnimation = ({ planet, camera, controls }) => {
   }
 
   let planetRadius = planet.geometry.boundingSphere.radius;
-  let distance = planetRadius * 3;
+  let distance = planetRadius * 5;
 
   let delta = new Vector3(0, 0, distance);
 

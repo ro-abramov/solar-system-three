@@ -21,6 +21,7 @@ const createOrbit = radius => {
   for (let i = 0; i < 400; i++) {
     let vertex = new Vector3();
     vertex.x = Math.sin(Math.PI / 180 * i) * radius;
+    vertex.y = Math.sin(Math.PI / 180 * i) * (radius - 300);
     vertex.z = Math.cos(Math.PI / 180 * i) * (radius - 200);
     planetOrbitGeom.vertices.push(vertex);
   }
@@ -68,16 +69,19 @@ const planetCreator = ({
   planet.planetRotation = rotation;
   let t = Math.PI * Math.random() * 1000000 / 180;
   planet.position.x = Math.sin(t * rotation) * radius;
+  planet.position.y = Math.sin(t * rotation) * (radius - 300);
   planet.position.z = Math.cos(t * rotation) * (radius - 200);
   if (withRing) {
     ring = createRings(diametr, textureLoader);
   }
   const rotate = () => {
     planet.position.x = Math.sin(t * rotation) * radius;
+    planet.position.y = Math.sin(t * rotation) * (radius - 300);
     planet.position.z = Math.cos(t * rotation) * (radius - 200);
     planet.rotation.y += 0.01;
     if (withRing) {
       ring.position.x = planet.position.x;
+      ring.position.y = planet.position.y;
       ring.position.z = planet.position.z;
       ring.rotation.y -= 0.008;
     }

@@ -175,46 +175,42 @@ export const createPlanets = () => {
 };
 
 export const lookAtPlanet = ({ planet, camera, controls }) => {
-  var distance;
+  if (planet === null) {
+    controls.enabled = true;
+    return;
+  }
+  
+  var distance = distanceToPlanet(planet.planetName);
 
+  camera.position.set(planet.position.x, planet.position.y, planet.position.z + distance);
+  camera.lookAt(planet.position);
+};
+
+export const lookAtPlanetAnimation = ({planet, camera, controls}) => {
   if (planet === null) {
     controls.enabled = true;
     return;
   }
 
-  switch (planet.planetName) {
-    case 'mercury':
-      distance = 100;
-      break;
-    case 'venus':
-      distance = 220;
-      break;
-    case 'earth':
-      distance = 250;
-      break;
-    case 'mars':
-      distance = 200;
-      break;
-    case 'jupiter':
-      distance = 1700;
-      break;
-    case 'saturn':
-      distance = 1700;
-      break;
-    case 'uranus':
-      distance = 1100;
-      break;
-    case 'neptune':
-      distance = 1000;
-      break;
-    default:
-      distance = 900;
-  }
+  let planetRadius = planet.geometry.boundingSphere.radius;
+  let distance = planetRadius * 3;
 
-  camera.position.z = planet.position.z + distance;
-  camera.position.x = planet.position.x;
-  camera.position.y = planet.position.y;
-  camera.rotation.x = 0;
-  camera.rotation.y = 0;
-  camera.rotation.z = 0;
+  let delta = new Vector3(0, 0, distance);
+
+  const rotationSpeed = planetRadius * 10; // time of full rotation is ms
+  const rotationState = (new Date).getTime() / rotationSpeed;
+
+  delta = delta.applyAxisAngle(new Vector3(0, 1, 0), rotationState)
+
+  const targetPosition = new Vector3(
+    delta.x + planet.position.x,
+    delta.y + planet.position.y,
+    delta.z + planet.position.z
+  );
+
+  camera.position.x = targetPosition.x;
+  camera.position.y = targetPosition.y;
+  camera.position.z = targetPosition.z;
+
+  camera.lookAt(planet.position);
 };

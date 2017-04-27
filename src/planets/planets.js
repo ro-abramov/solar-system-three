@@ -2,11 +2,13 @@ import {
   Mesh,
   SphereGeometry,
   MeshPhongMaterial as Material,
+  MeshNormalMaterial,
   TextureLoader,
   PointsMaterial,
   Geometry,
   Vector3,
-  Points
+  Points,
+  RingGeometry
 } from 'three';
 
 const createOrbit = radius => {
@@ -28,25 +30,20 @@ const createOrbit = radius => {
   orbit.castShadow = true;
   return orbit;
 };
-const createRings = diametr => {
-  let ringsGeom = new Geometry();
-  let ringsMaterial = new PointsMaterial({
-    size: 0.8,
-    color: 0x6e6e6e,
-    sizeAttenuation: false
+
+const createRings = (diametr, textureLoader) => {
+  let ringsGeom = new RingGeometry(diametr + 20, diametr + 250, 100);
+  const texture = textureLoader.load(
+    `${process.env.PUBLIC_URL}/saturn_ring.jpg`
+  );
+  let ringsMaterial = new Material({
+    bumpMap: texture,
+    map: texture
   });
-  for (let i = 0; i < 90000; i++) {
-    let vertex = new Vector3();
-    vertex.x =
-      Math.sin(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
-    vertex.y = Math.random() * 10;
-    vertex.z =
-      Math.cos(Math.PI / 180 * i) * (diametr * 1.2 - i) / diametr * 1.8;
-    ringsGeom.vertices.push(vertex);
-  }
-  const ring = new Points(ringsGeom, ringsMaterial);
+  const ring = new Mesh(ringsGeom, ringsMaterial);
   ring.castShadow = true;
-  ring.rotation.z = -Math.PI / 8;
+  ring.rotation.x = -Math.PI / 3;
+  ring.rotation.y = Math.PI / 10;
   return ring;
 };
 
@@ -74,7 +71,7 @@ const planetCreator = ({
   planet.position.x = Math.sin(t * rotation) * radius;
   planet.position.z = Math.cos(t * rotation) * (radius - 200);
   if (withRing) {
-    ring = createRings(diametr);
+    ring = createRings(diametr, textureLoader);
   }
   const rotate = () => {
     planet.position.x = Math.sin(t * rotation) * radius;
@@ -83,7 +80,7 @@ const planetCreator = ({
     if (withRing) {
       ring.position.x = planet.position.x;
       ring.position.z = planet.position.z;
-      ring.rotation.y -= 0.008;
+      ring.rotation.z -= 0.008;
     }
     t += Math.PI / 180 * 2;
   };

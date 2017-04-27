@@ -8,7 +8,7 @@ import {
   Geometry,
   Vector3,
   Points,
-  RingGeometry
+  CylinderGeometry
 } from 'three';
 
 const createOrbit = radius => {
@@ -32,7 +32,7 @@ const createOrbit = radius => {
 };
 
 const createRings = (diametr, textureLoader) => {
-  let ringsGeom = new RingGeometry(diametr + 20, diametr + 250, 100);
+  let ringsGeom = new CylinderGeometry(diametr + 150, diametr + 150, 2, 100);
   const texture = textureLoader.load(
     `${process.env.PUBLIC_URL}/saturn_ring.jpg`
   );
@@ -42,8 +42,7 @@ const createRings = (diametr, textureLoader) => {
   });
   const ring = new Mesh(ringsGeom, ringsMaterial);
   ring.castShadow = true;
-  ring.rotation.x = -Math.PI / 3;
-  ring.rotation.y = Math.PI / 10;
+  ring.rotation.z = Math.PI / 10;
   return ring;
 };
 
@@ -81,7 +80,7 @@ const planetCreator = ({
     if (withRing) {
       ring.position.x = planet.position.x;
       ring.position.z = planet.position.z;
-      ring.rotation.z -= 0.008;
+      ring.rotation.y -= 0.008;
     }
     t += Math.PI / 180 * 2;
   };

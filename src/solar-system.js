@@ -15,6 +15,7 @@ import {
 } from './planets/planets';
 import createStars from './planets/stars';
 import adaptiveHDR from './effects/adaptiveHDR';
+import backdropMesh from './scene/bg';
 
 const width = window.innerWidth;
 const height = window.innerHeight - 4;
@@ -53,6 +54,7 @@ export default () => {
   scene.add(light);
   scene.add(sun);
   scene.add(stars);
+  scene.add(backdropMesh);
   addPlanetsToScene(planets, scene);
 
   var shaderRenderrer = adaptiveHDR(renderer, scene, camera, light);
@@ -81,7 +83,7 @@ export default () => {
     if (intersects.length === 0) return;
     controls.enabled = false;
     var planet = intersects[0].object;
-    if (planet.planetName === 'sun') return;
+    if ( ! planet.isSelectable) return;
     selector.value = planet.planetName;
     setPlanetToLook(planet);
   });
